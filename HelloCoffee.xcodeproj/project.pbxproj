@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8D73EC9E28B401F000D8D3DF /* CoffeeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D73EC9D28B401F000D8D3DF /* CoffeeModel.swift */; };
-		8D9795BB28B08DD300C5E77A /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9795BA28B08DD300C5E77A /* ProductListView.swift */; };
 		8D9795BF28B1873A00C5E77A /* OrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9795BE28B1873A00C5E77A /* OrderDetailView.swift */; };
 		8DCA87DC28AFCE2C003B5C8B /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DCA87DB28AFCE2C003B5C8B /* String+Extensions.swift */; };
 		8DCA87DE28AFD339003B5C8B /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DCA87DD28AFD339003B5C8B /* View+Extensions.swift */; };
@@ -41,7 +40,6 @@
 
 /* Begin PBXFileReference section */
 		8D73EC9D28B401F000D8D3DF /* CoffeeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeModel.swift; sourceTree = "<group>"; };
-		8D9795BA28B08DD300C5E77A /* ProductListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListView.swift; sourceTree = "<group>"; };
 		8D9795BE28B1873A00C5E77A /* OrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailView.swift; sourceTree = "<group>"; };
 		8DCA87DB28AFCE2C003B5C8B /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		8DCA87DD28AFD339003B5C8B /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
@@ -164,7 +162,6 @@
 			children = (
 				8DEAA0C828AECCAA008772DC /* AddCoffeeView.swift */,
 				8DCA87DF28B002B1003B5C8B /* OrderCellView.swift */,
-				8D9795BA28B08DD300C5E77A /* ProductListView.swift */,
 				8D9795BE28B1873A00C5E77A /* OrderDetailView.swift */,
 			);
 			path = Views;
@@ -287,7 +284,6 @@
 				8DCA87DC28AFCE2C003B5C8B /* String+Extensions.swift in Sources */,
 				8DEAA0B028AEBDCE008772DC /* ContentView.swift in Sources */,
 				8DCA87E028B002B1003B5C8B /* OrderCellView.swift in Sources */,
-				8D9795BB28B08DD300C5E77A /* ProductListView.swift in Sources */,
 				8DEAA0AE28AEBDCE008772DC /* HelloCoffeeApp.swift in Sources */,
 				8D73EC9E28B401F000D8D3DF /* CoffeeModel.swift in Sources */,
 				8DCA87E328B0111B003B5C8B /* Double+Extensions.swift in Sources */,

@@ -13,27 +13,15 @@ enum NetworkError: Error {
     case badUrl
 }
 
-@MainActor
-class Webservice: ObservableObject {
+class Webservice {
     
     private var baseURL: URL
-    @Published var selectedOrder: Order = Order.preview 
-    @Published private(set) var orders: [Order] = []
     
-    nonisolated init(baseURL: URL) {
+    init(baseURL: URL) {
         self.baseURL = baseURL
     }
     
-    func orderById(_ id: Int) -> Order {
-        
-        guard let index = orders.firstIndex(where: { $0.id == id }) else {
-            return Order.preview
-        }
-        
-        return orders[index]
-    }
-    
-    func deleteOrder(orderId: Int) async throws {
+    func deleteOrder(orderId: Int) async throws -> Order {
         
         guard let url = URL(string: Endpoints.deleteOrder(orderId).path, relativeTo: baseURL) else {
             throw NetworkError.badUrl
@@ -48,20 +36,14 @@ class Webservice: ObservableObject {
             throw NetworkError.badRequest
         }
         
-        // check the response
-        guard let successResponse = try? JSONDecoder().decode(SuccessResponse.self, from: data) else {
+        guard let deletedOrder = try? JSONDecoder().decode(Order.self, from: data) else {
             throw NetworkError.decodingError
         }
         
-        if successResponse.success {
-            // remove the orders from local orders
-            orders = orders.filter { $0.id != orderId }
-        } else {
-            throw NetworkError.badRequest
-        }
+        return deletedOrder
     }
     
-    func updateOrder(order: Order) async throws {
+    func updateOrder(order: Order) async throws -> Order {
         
         guard let orderId = order.id else {
             throw NetworkError.badRequest
@@ -88,13 +70,15 @@ class Webservice: ObservableObject {
             throw NetworkError.decodingError
         }
         
+        return updatedOrder
+        /*
         // update the orders array
         if let index = orders.firstIndex(where: { $0.id == updatedOrder.id }) {
             selectedOrder = updatedOrder
-        }
+        } */
     }
     
-    func placeOrder(order: Order) async throws {
+    func placeOrder(order: Order) async throws -> Order {
         
         guard let url = URL(string: Endpoints.placeOrder.path, relativeTo: baseURL) else {
             throw NetworkError.badUrl
@@ -116,10 +100,10 @@ class Webservice: ObservableObject {
             throw NetworkError.decodingError
         }
         
-        orders.append(newOrder)
+        return newOrder
     }
     
-    func getOrders() async throws {
+    func getOrders() async throws -> [Order] {
         
         guard let url = URL(string: Endpoints.allOrders.path, relativeTo: baseURL) else {
             throw NetworkError.badUrl
@@ -137,7 +121,7 @@ class Webservice: ObservableObject {
             throw NetworkError.decodingError
         }
         
-        self.orders = orders
+        return orders
     }
     
 }

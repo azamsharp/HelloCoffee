@@ -15,7 +15,7 @@ struct AddCoffeeErrors {
 
 struct AddCoffeeView: View {
     
-    var order: Order?
+    @Binding var order: Order? 
     @State private var name: String = ""
     @State private var coffeeName: String = ""
     @State private var price: String = ""
@@ -23,10 +23,10 @@ struct AddCoffeeView: View {
     @State private var errors: AddCoffeeErrors = AddCoffeeErrors()
     
     @Environment(\.dismiss) private var dismiss 
-    @EnvironmentObject private var service: Webservice
-    
-    init(order: Order? = nil) {
-        self.order = order
+    @EnvironmentObject private var model: CoffeeModel
+   
+    init(order: Binding<Order?> = .constant(nil)) {
+         _order = order 
     }
     
     private func populateExistingOrder() {
@@ -64,8 +64,7 @@ struct AddCoffeeView: View {
     private func placeOrder(_ order: Order) async {
         
         do {
-            try await service.placeOrder(order: order)
-            dismiss()
+            try await model.placeOrder(order)
         } catch {
             print(error)
         }
@@ -73,8 +72,8 @@ struct AddCoffeeView: View {
     
     private func updateOrder(_ order: Order) async {
         do {
-            try await service.updateOrder(order: order)
-
+            try await model.updateOrder(order)
+            self.order = order
         } catch {
             print(error)
         }
@@ -90,7 +89,7 @@ struct AddCoffeeView: View {
             editOrder.size = coffeeSize
             // call to update the order
             await updateOrder(editOrder)
-            dismiss()
+           
             
         } else {
             // save a new order
@@ -98,6 +97,8 @@ struct AddCoffeeView: View {
             // place the order
             await placeOrder(order)
         }
+        
+        dismiss()
     }
     
     var body: some View {
@@ -140,8 +141,9 @@ struct AddCoffeeView: View {
     }
 }
 
+/*
 struct AddCoffeeView_Previews: PreviewProvider {
     static var previews: some View {
         AddCoffeeView(order: Order.preview)
     }
-}
+} */

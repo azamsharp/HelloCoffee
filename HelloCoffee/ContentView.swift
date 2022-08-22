@@ -10,11 +10,11 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var isPresented: Bool = false
-    @EnvironmentObject private var service: Webservice
+    @EnvironmentObject private var model: CoffeeModel
     
     private func populateOrders() async {
         do {
-            try await service.getOrders()
+            try await model.populateOrders()
         } catch {
             print(error)
         }
@@ -23,14 +23,14 @@ struct ContentView: View {
     private func deleteOrder(_ indexSet: IndexSet) {
        
         indexSet.forEach { index in
-            let order = service.orders[index]
+            let order = model.orders[index]
             guard let orderId = order.id else {
                 return
             }
               
             Task {
                 do {
-                    try await service.deleteOrder(orderId: orderId)
+                    try await model.deleteOrder(orderId)
                 } catch {
                     print(error)
                 }
@@ -42,16 +42,18 @@ struct ContentView: View {
         let _ = print(Self._printChanges())
         VStack {
             
-            if service.orders.isEmpty {
+            if model.orders.isEmpty {
                 Text("No orders available.")
                     .accessibilityIdentifier("noOrdersText")
             } else {
                 List {
-                    ForEach(service.orders) { order in
-                        NavigationLink(value: Route.detail(order.id!)) {
+                    ForEach(model.orders) { order in
+                        NavigationLink(value: order) {
                             OrderCellView(order: order)
                         }
                     }.onDelete(perform: deleteOrder)
+                }.navigationDestination(for: Order.self) { order in
+                    OrderDetailView(order: model.orderBinding(for: order.id))
                 }
             }
         }
@@ -59,7 +61,7 @@ struct ContentView: View {
             await populateOrders()
         }.navigationTitle("Orders")
         .sheet(isPresented: $isPresented, content: {
-            AddCoffeeView()
+            AddCoffeeView(order: .constant(nil))
         })
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -70,11 +72,11 @@ struct ContentView: View {
         }
     }
 }
-
+/*
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            ContentView().environmentObject(Webservice(baseURL: URL(string: "https://island-bramble.glitch.me/test/orders")!))
+            ContentView().environmentObject(CoffeeModel(webservice: Webservice(baseURL: URL(string: "")!)))
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                         case .add:
@@ -87,6 +89,6 @@ struct ContentView_Previews: PreviewProvider {
                 }
         }
     }
-}
+} */
 
 
