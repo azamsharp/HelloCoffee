@@ -48,20 +48,23 @@ struct ContentView: View {
             } else {
                 List {
                     ForEach(model.orders) { order in
-                        NavigationLink(value: order) {
+                        NavigationLink(value: order.id) {
                             OrderCellView(order: order)
                         }
-                    }.onDelete(perform: deleteOrder)
-                }.navigationDestination(for: Order.self) { order in
-                    OrderDetailView(order: model.orderBinding(for: order.id))
-                }
+                    }
+                    
+                    .onDelete(perform: deleteOrder)
+                }.accessibilityIdentifier("orderList")
             }
+        }
+        .navigationDestination(for: Int.self) { orderId in
+            OrderDetailView(orderId: orderId)
         }
         .task {
             await populateOrders()
         }.navigationTitle("Orders")
         .sheet(isPresented: $isPresented, content: {
-            AddCoffeeView(order: .constant(nil))
+            AddCoffeeView()
         })
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

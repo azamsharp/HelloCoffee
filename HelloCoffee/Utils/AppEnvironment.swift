@@ -2,7 +2,6 @@
 
 import Foundation
 
-
 enum Endpoints {
     case allOrders
     case placeOrder

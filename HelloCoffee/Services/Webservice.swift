@@ -23,6 +23,7 @@ class Webservice {
     
     func deleteOrder(orderId: Int) async throws -> Order {
         
+        print(Endpoints.deleteOrder(orderId).path)
         guard let url = URL(string: Endpoints.deleteOrder(orderId).path, relativeTo: baseURL) else {
             throw NetworkError.badUrl
         }

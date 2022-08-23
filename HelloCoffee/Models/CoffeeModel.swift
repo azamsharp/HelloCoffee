@@ -6,39 +6,24 @@
 //
 
 import Foundation
-import SwiftUI 
+import SwiftUI
 
 @MainActor
 class CoffeeModel: ObservableObject {
     
+    // USE CONTRACT TO SUPPORT MORE VARIATIONS IF NEEDED
     let webservice: Webservice
-    @Published var selectedOrder: Order?
     @Published private(set) var orders: [Order] = []
     
     init(webservice: Webservice) {
         self.webservice = webservice
     }
     
-    public func orderBinding(for id: Order.ID) -> Binding<Order> {
-        Binding<Order> {
-            guard let index = self.orders.firstIndex(where: { $0.id == id }) else {
-                fatalError()
-            }
-            return self.orders[index]
-        } set: { newValue in
-            guard let index = self.orders.firstIndex(where: { $0.id == id }) else {
-                fatalError()
-            }
-            return self.orders[index] = newValue
-        }
-    }
-    
-    func orderById(_ id: Int) -> Order {
+    func orderById(_ id: Int) -> Order? {
         
         guard let index = orders.firstIndex(where: { $0.id == id }) else {
-            return Order.preview
+           return nil 
         }
-        
         return orders[index]
     }
     
@@ -53,7 +38,10 @@ class CoffeeModel: ObservableObject {
     
     func updateOrder(_ order: Order) async throws {
         let updatedOrder = try await webservice.updateOrder(order: order)
-        selectedOrder = updatedOrder
+        guard let index = orders.firstIndex(where: { $0.id == updatedOrder.id }) else {
+            throw CoffeeOrderError.invalidOrderId
+        }
+        orders[index] = updatedOrder
     }
     
     func deleteOrder(_ orderId: Int) async throws {

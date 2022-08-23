@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-enum Route: Hashable {
-    case add
-    //case detail(Int)
-    //case edit(Order)
-}
-
 @main
 struct HelloCoffeeApp: App {
     
@@ -28,14 +22,6 @@ struct HelloCoffeeApp: App {
         WindowGroup {
             NavigationStack {
                 ContentView()
-                    .navigationDestination(for: Route.self) { route in
-                        switch route {
-                            case .add:
-                                AddCoffeeView(order: .constant(nil))
-                          //  case .edit(let order):
-                            //    AddCoffeeView(order: order)
-                        }
-                    }
             }.environmentObject(model)
         }
     }

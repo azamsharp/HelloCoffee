@@ -15,7 +15,7 @@ struct AddCoffeeErrors {
 
 struct AddCoffeeView: View {
     
-    @Binding var order: Order? 
+    var order: Order? = nil 
     @State private var name: String = ""
     @State private var coffeeName: String = ""
     @State private var price: String = ""
@@ -24,10 +24,6 @@ struct AddCoffeeView: View {
     
     @Environment(\.dismiss) private var dismiss 
     @EnvironmentObject private var model: CoffeeModel
-   
-    init(order: Binding<Order?> = .constant(nil)) {
-         _order = order 
-    }
     
     private func populateExistingOrder() {
         if let order = order {
@@ -73,7 +69,6 @@ struct AddCoffeeView: View {
     private func updateOrder(_ order: Order) async {
         do {
             try await model.updateOrder(order)
-            self.order = order
         } catch {
             print(error)
         }
@@ -89,54 +84,54 @@ struct AddCoffeeView: View {
             editOrder.size = coffeeSize
             // call to update the order
             await updateOrder(editOrder)
-           
-            
         } else {
             // save a new order
             let order = Order(name: name, coffeeName: coffeeName, total: Double(price) ?? 0.0, size: coffeeSize)
             // place the order
             await placeOrder(order)
         }
-        
         dismiss()
     }
     
     var body: some View {
-        Form {
-            TextField("Name", text: $name)
-                .accessibilityIdentifier("name")
-            
-            Text(errors.name).visible(!errors.name.isEmpty)
-                .font(.caption)
-            TextField("Coffee name", text: $coffeeName)
-                .accessibilityIdentifier("coffeeName")
-            
-            // easier to write but still injects an EmptyView
-            Text(errors.coffeeName).visible(errors.coffeeName.isNotEmpty)
-                .font(.caption)
-            TextField("Price", text: $price)
-                .accessibilityIdentifier("price")
-            
-            Text(errors.price).visible(!errors.price.isEmpty)
-                .font(.caption)
-            
-            Picker("Select size", selection: $coffeeSize) {
-                ForEach(CoffeeSize.allCases, id: \.rawValue) { size in
-                    Text(size.rawValue).tag(size)
-                }
-            }.pickerStyle(.segmented)
-            
-            Button(order != nil ? "Update Order": "Place Order") {
-                if isValid {
-                    Task {
-                        await saveOrUpdate()
+        NavigationStack {
+            Form {
+                TextField("Name", text: $name)
+                    .accessibilityIdentifier("name")
+                
+                Text(errors.name).visible(!errors.name.isEmpty)
+                    .font(.caption)
+                TextField("Coffee name", text: $coffeeName)
+                    .accessibilityIdentifier("coffeeName")
+                
+                // easier to write but still injects an EmptyView
+                Text(errors.coffeeName).visible(errors.coffeeName.isNotEmpty)
+                    .font(.caption)
+                TextField("Price", text: $price)
+                    .accessibilityIdentifier("price")
+                
+                Text(errors.price).visible(!errors.price.isEmpty)
+                    .font(.caption)
+                
+                Picker("Select size", selection: $coffeeSize) {
+                    ForEach(CoffeeSize.allCases, id: \.rawValue) { size in
+                        Text(size.rawValue).tag(size)
+                    }
+                }.pickerStyle(.segmented)
+                
+                Button(order != nil ? "Update Order": "Place Order") {
+                    if isValid {
+                        Task {
+                            await saveOrUpdate()
+                        }
                     }
                 }
+                .accessibilityIdentifier("placeOrderButton")
+                .centerHorizontally()
+            }.navigationTitle(order == nil ? "Add Coffee": "Update Coffee")
+            .onAppear {
+                populateExistingOrder()
             }
-            .accessibilityIdentifier("placeOrderButton")
-            .centerHorizontally()
-        }.onAppear {
-            populateExistingOrder()
         }
     }
 }
